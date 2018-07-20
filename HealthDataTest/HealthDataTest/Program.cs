@@ -9,15 +9,18 @@ namespace HealthDataTest {
                 return;
             }
 
-            
 
             switch (args[0].ToLower()) {
                 case "newaccount": {
                     new CmdNewAccount().Run(args);
                 }
-                break;
+                    break;
                 case "batchtranfer": {
-                    new BatchTransfer().Run(args);
+                    new CmdBatchTransfer().Run(args);
+                }
+                    break;
+                case "contract": {
+                    new CmdContractTest().Run(args);
                 }
                     break;
             }

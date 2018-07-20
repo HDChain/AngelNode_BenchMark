@@ -11,7 +11,7 @@ using Nethereum.Web3.Accounts;
 
 namespace HealthDataTest.Command
 {
-    class BatchTransfer : CmdBase
+    class CmdBatchTransfer : CmdBase
     {
 
         private static RpcClient Rpcclient = new RpcClient(new Uri("http://127.0.0.1:10008"));
