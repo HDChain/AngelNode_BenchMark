@@ -1,7 +1,8 @@
 {
   "profiles": {
     "HealthDataTest": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "batchtranfer"
     }
   }
 }

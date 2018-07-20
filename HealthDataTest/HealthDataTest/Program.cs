@@ -15,6 +15,10 @@ namespace HealthDataTest {
                 case "newaccount": {
                     new CmdNewAccount().Run(args);
                 }
+                break;
+                case "batchtranfer": {
+                    new BatchTransfer().Run(args);
+                }
                     break;
             }
         }
@@ -27,8 +31,8 @@ namespace HealthDataTest {
 Commands:
 newaccount
     -n=[number of account to create]
-
-
+batchtranfer
+    
 
 
 11");
