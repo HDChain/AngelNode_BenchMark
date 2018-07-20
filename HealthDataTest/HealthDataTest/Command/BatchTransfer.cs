@@ -14,7 +14,7 @@ namespace HealthDataTest.Command
     class BatchTransfer : CmdBase
     {
 
-        private static RpcClient Rpcclient = new RpcClient(new Uri("http://127.0.0.1:10001"));
+        private static RpcClient Rpcclient = new RpcClient(new Uri("http://127.0.0.1:10008"));
 
         private static string RootPrivateKey = "0x3ba2dc5aa1f631b4f1465b92557e2434e44d70ae116986a87e9e368fa6efa19a";
         private static string RootPubAddress = "0xd6bd66ad9ab4a451963b30479a5cb3a9217a1b83";
@@ -34,6 +34,7 @@ namespace HealthDataTest.Command
             var contract = rootWeb3.Eth.GetContract(Abi, _contractAddress);
             var function = contract.GetFunction("Batch");
 
+            var count = 0;
 
             using (var fr = new StreamReader(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"acc.txt"))) {
                 List<string> adds = new List<string>();
@@ -48,11 +49,12 @@ namespace HealthDataTest.Command
 
 
                     adds.Add(addr);
-                    if (adds.Count == 100) {
+                    var accountNum = 200;
+                    if (adds.Count == accountNum) {
                         try {
                             var gas = function.EstimateGasAsync(RootPubAddress,
-                                new HexBigInteger(10000000),
-                                new HexBigInteger(Web3.Convert.ToWei(2, UnitConversion.EthUnit.Ether)),
+                                new HexBigInteger(100000000),
+                                new HexBigInteger(Web3.Convert.ToWei(10000, UnitConversion.EthUnit.Ether)),
                                 new object[]{adds.ToArray()}).Result;
 
                             var ti = new TransactionInput() {
@@ -64,6 +66,10 @@ namespace HealthDataTest.Command
                             };
                             
                             var ret = function.SendTransactionAndWaitForReceiptAsync(ti,null,new object[]{adds.ToArray()}).Result;
+
+                            count += accountNum;
+                            Console.WriteLine($"process count {count}  cur status {ret.Status.Value}");
+
                         } catch (Exception ex) {
 
                             Console.WriteLine(ex.Message);
