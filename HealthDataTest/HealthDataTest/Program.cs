@@ -35,7 +35,7 @@ Commands:
 newaccount
     -n=[number of account to create]
 batchtranfer
-    
+    -n=[account filename]
 
 
 11");

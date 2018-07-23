@@ -20,14 +20,29 @@ namespace HealthDataTest.Command
         
         public override void Run(string[] args) {
 
+            var cmdArgs = this.ParseArgs(args);
+
+            string fn = "acc.txt";
+
+            foreach (var arg in cmdArgs) {
+                switch (arg.Item1) {
+                    case "fn":
+                        fn = arg.Item2;
+                        break;
+                }
+            }
+            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fn);
+            if (!File.Exists(filePath)) {
+                Console.WriteLine($"{filePath} not exists");
+                return;
+            }
+            
             LevelDbHelper.Instance.Init();
-
-
             Rpcclient = new RpcClient(new Uri($"http://127.0.0.1:10008"));
 
             var gasPrice = new HexBigInteger(0);
-
-            using (var fr = new StreamReader(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "acc.txt"))) {
+            
+            using (var fr = new StreamReader(filePath)) {
                 while (true) {
                     var line = fr.ReadLine();
                     if (string.IsNullOrEmpty(line)) {
@@ -71,10 +86,7 @@ namespace HealthDataTest.Command
                     } catch (Exception ex) {
                         Console.WriteLine(ex.Message);
                     }
-
-
-
-
+                    
                 }
             }
 
