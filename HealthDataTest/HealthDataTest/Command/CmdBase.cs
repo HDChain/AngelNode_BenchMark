@@ -7,6 +7,8 @@ namespace HealthDataTest.Command
     abstract class CmdBase {
         public abstract void Run(string[] args);
 
+        public abstract void Stop();
+
         public List<Tuple<string,string>> ParseArgs(string[] args) {
 
             var ret = new List<Tuple<string, string>>();
@@ -26,5 +28,7 @@ namespace HealthDataTest.Command
 
             return ret;
         }
+        
+        
     }
 }

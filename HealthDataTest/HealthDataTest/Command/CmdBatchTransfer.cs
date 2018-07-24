@@ -83,5 +83,9 @@ namespace HealthDataTest.Command
 
             
         }
+
+        public override void Stop() {
+            
+        }
     }
 }

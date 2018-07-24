@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using HealthDataTest.DataTask;
 using HealthDataTest.Models;
 using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
@@ -40,8 +41,7 @@ namespace HealthDataTest.Command
             LevelDbHelper.Instance.Init();
             Rpcclient = new RpcClient(new Uri($"http://127.0.0.1:10008"));
 
-            var gasPrice = new HexBigInteger(0);
-            
+            DataTask.DataTask<dynamic> contractTask = new DataTask<dynamic>();
             using (var fr = new StreamReader(filePath)) {
                 while (true) {
                     var line = fr.ReadLine();
@@ -56,45 +56,56 @@ namespace HealthDataTest.Command
                     if (LevelDbHelper.Instance.IsKeyExists(addr)) {
                         continue;
                     }
-
-                    var web3 = new Web3(new Account(key), Rpcclient);
-
-                    try {
-                        var txn1 = web3.Eth.DeployContract.SendRequestAndWaitForReceiptAsync(Abi, Code, addr, 
-                            new HexBigInteger(1000000) ,gasPrice,new HexBigInteger(0)).Result;
-
-                        if (string.IsNullOrEmpty(txn1.ContractAddress)) {
-                            Console.WriteLine("");
-
-                        }
-
-                        var contract = web3.Eth.GetContract(Abi, txn1.ContractAddress);
-                        var function = contract.GetFunction("AddData");
-
-                        for (int i = 0; i < 100; i++) {
-                            var newid = Guid.NewGuid().ToString("N");
-                            var ret = function.SendTransactionAsync(addr,
-                                new HexBigInteger(100000),
-                                gasPrice,
-                                new HexBigInteger(0),
-                                i,
-                                newid).Result;
-                        }
-
-                        LevelDbHelper.Instance.Put(addr,txn1.ContractAddress);
-                        
-                    } catch (Exception ex) {
-                        Console.WriteLine(ex.Message);
-                    }
                     
+                    contractTask.AddTask(pair);
                 }
             }
 
-
-
-
+            contractTask.Start(DoTask);
+            contractTask.Wait();
+            
 
             LevelDbHelper.Instance.Destroy();
+        }
+
+        private void DoTask(dynamic pair) {
+            var gasPrice = new HexBigInteger(0);
+            
+            var key = pair[1];
+            var addr = pair[0];
+            var web3 = new Web3(new Account(key), Rpcclient);
+
+            try {
+                var txn1 = web3.Eth.DeployContract.SendRequestAndWaitForReceiptAsync(Abi, Code, addr, 
+                    new HexBigInteger(1000000) ,gasPrice,new HexBigInteger(0)).Result;
+
+                if (string.IsNullOrEmpty(txn1.ContractAddress)) {
+                    Console.WriteLine("");
+
+                }
+
+                var contract = web3.Eth.GetContract(Abi, txn1.ContractAddress);
+                var function = contract.GetFunction("AddData");
+
+                for (int i = 0; i < 100; i++) {
+                    var newid = Guid.NewGuid().ToString("N");
+                    var ret = function.SendTransactionAsync(addr,
+                        new HexBigInteger(100000),
+                        gasPrice,
+                        new HexBigInteger(0),
+                        i,
+                        newid).Result;
+                }
+
+                LevelDbHelper.Instance.Put(addr,txn1.ContractAddress);
+                        
+            } catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public override void Stop() {
+            
         }
     }
 }
