@@ -3,12 +3,15 @@ Web3 = require('web3');
 
 var arguments = process.argv.splice(2);
 
-rpc = "http://localhost:10008"
+rpc = "http://localhost:10001"
 
 if (arguments.length > 0){
 	rpc = arguments[0];
 }
 
+process.on('uncaughtException', function(err) {
+    console.error('Error caught in uncaughtException event:', err);
+});
 
 defaultWeb3 = new Web3(Web3.givenProvider || rpc);
 var newacc = defaultWeb3.eth.accounts.create();
@@ -45,6 +48,11 @@ useriddataContract.deploy()
 .then(function(newContractInstance){
     console.log("new : " + newContractInstance.options.address) 
 	
+	setTimeout(doAddData,5000,newContractInstance);
+});	
+
+function doAddData(newContractInstance){
+	
 	var runCount = 0;
 	var runTotleCount = 100;
 	
@@ -69,8 +77,7 @@ useriddataContract.deploy()
 		});
 	}
 	
-	
-});	
+}
 	
 	
 	
