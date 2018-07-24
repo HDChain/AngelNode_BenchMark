@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using HealthDataTest.DataTask;
+using log4net;
 using Nethereum.Signer;
 
 namespace HealthDataTest.Command {
@@ -12,10 +11,14 @@ namespace HealthDataTest.Command {
     /// -t=[thread]
     /// </summary>
     internal class CmdNewAccount : CmdBase {
+        private static readonly ILog Logger = LogManager.GetLogger(Log4NetCore.CoreRepository,typeof(CmdNewAccount));
         private DataTask<Tuple<int, int>> _dataTask;
 
 
         public override void Run(string[] args) {
+            
+            Logger.Info("run");
+            
             var countToCreate = 1;
             var threadCount = 1;
 

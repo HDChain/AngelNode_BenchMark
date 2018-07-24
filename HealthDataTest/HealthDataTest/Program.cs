@@ -18,7 +18,7 @@ namespace HealthDataTest {
                 return;
             }
 
-
+            Logger.Info(args);
             //command list
             
             switch (args[0].ToLower()) {
@@ -36,7 +36,7 @@ namespace HealthDataTest {
                     break;
             }
         }
-
+        
 
         private static void PrintHelp() {
             Console.WriteLine(
@@ -50,8 +50,8 @@ newaccount
 batchtranfer
     -n=[account filename]
 contract
-    -n=[account filename]
-
+    -n=[number of account]
+    -t=[each file with thread count ]
 11");
         }
     }
