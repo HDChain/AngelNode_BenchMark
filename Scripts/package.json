@@ -1,0 +1,17 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "runtest.js",
+  "dependencies": {
+    "solc": "^0.4.24",
+    "truffle-privatekey-provider": "^0.1.0",
+    "web3": "^1.0.0-beta.33"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
